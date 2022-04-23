@@ -18,17 +18,17 @@ abstract class AbstractColumnReader implements ColumnReaderInterface
 
     abstract protected function getSpecification(): Specification;
 
-    public function read(StreamWrapper $fp): Column
+    public function read(StreamWrapper $fp, ?int $index = null): Column
     {
         $memoryChunk = $fp->read($this->spec->fieldLength);
         if (($len = strlen($memoryChunk)) !== $this->spec->fieldLength) {
             throw new \LogicException('Column data expected length: '.$this->spec->fieldLength.' got: '.$len);
         }
 
-        return $this->createColumn($memoryChunk);
+        return $this->createColumn($memoryChunk, $index);
     }
 
-    protected function createColumn(string $memoryChunk): Column
+    protected function createColumn(string $memoryChunk, ?int $index = null): Column
     {
         $properties = $this->extractArgs($memoryChunk);
 

@@ -15,15 +15,15 @@ class DBaseColumnReader extends AbstractColumnReader
         return HeaderSpecificationFactory::create();
     }
 
-    protected function createColumn(string $memoryChunk): Column
+    protected function createColumn(string $memoryChunk, ?int $index = null): Column
     {
-        $header = parent::createColumn($memoryChunk);
+        $header = parent::createColumn($memoryChunk, $index);
 
         $nameEndIndex = strpos($header->rawName, chr(0x00));
         $name = (false !== $nameEndIndex) ? substr($header->rawName, 0, $nameEndIndex) : trim($header->rawName);
 
         // chop all garbage from 0x00
-        $header->name = strtolower($name);
+        $header->name = ($index !== null ? $index . '_' : '') . strtolower($name);
 
         if (in_array($header->type, [FieldType::CHAR, FieldType::MEMO])) {
             $header->length = $header->length + 256 * $header->decimalCount;

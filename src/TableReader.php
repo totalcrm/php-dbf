@@ -36,6 +36,9 @@ class TableReader
     /** @var int */
     protected $deleteCount = 0;
 
+    /** @var bool */
+    protected $isColumnId = false;
+
     /** @var RecordInterface|null */
     protected $record;
 
@@ -53,7 +56,8 @@ class TableReader
      * @param array $options Array of options:<br>
      *                       encoding - convert text data from<br>
      *                       columns - available columns<br>
-     *                       encoder - encoder class name, default: IconvEncoder::class<br>
+     *                       encoder - encoder class name, default: IconvEncoder::class
+     *                       isColumnId - enable column id indexes by name. id => 0_id, default:false<br>
      *
      * @throws \Exception
      */
@@ -62,9 +66,10 @@ class TableReader
         $this->table = new Table();
         $this->table->filepath = $filepath;
 
-        $this->encoder = isset($options['encoder']) && $options['encoder'] instanceof EncoderInterface ?
-            $options['encoder'] :
-            new IconvEncoder();
+        $this->encoder = isset($options['encoder']) && $options['encoder'] instanceof EncoderInterface
+            ? $options['encoder']
+            : new IconvEncoder()
+        ;
         $this->table->options = $this->resolveOptions($options);
 
         $this->open();
@@ -78,6 +83,7 @@ class TableReader
             'columns'  => [],
             'encoding' => null,
             'editMode' => null,
+            'isColumnId' => false,
         ], $options);
     }
 

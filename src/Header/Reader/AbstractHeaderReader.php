@@ -70,7 +70,7 @@ abstract class AbstractHeaderReader implements HeaderReaderInterface
         $bytePos = 1;
         $columnReader = ColumnReaderFactory::create($this->header->version);
         for ($i = 0; $i < $columnsCount; $i++) {
-            $column = $columnReader->read($this->fp);
+            $column = $columnReader->read($this->fp, $this->options['isColumnId'] ? $i : null);
             if (empty($targetColumns) || in_array($column->name, $targetColumns)) {
                 $column->columnIndex = $i;
                 $column->bytePosition = $bytePos;
